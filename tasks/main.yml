@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2015 by Delphix. All rights reserved.
+#
+
+---
+
+- include: apt-cacher-ng.yml
+  when: apt_cache_server_enable
+
+- include: devpi.yml
+  when: devpi_server_enable
+
+- include: docker-registry.yml
+  when: docker_registry_enable

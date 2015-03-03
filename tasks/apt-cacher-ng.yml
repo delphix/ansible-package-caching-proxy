@@ -1,0 +1,21 @@
+#
+# Copyright (c) 2015 by Delphix. All rights reserved.
+#
+
+---
+
+- name: apt-cacher-ng | Create {{ apt_cache_server_dir }} to store APT cache
+  file:
+    path="{{ apt_cache_server_dir }}"
+    state=directory
+
+# The hard-coded port and directory below are intentional as they come from
+# the Dockerfile of the container itself. See:
+#   https://github.com/extellisys/docker-image-apt-cacher-ng/blob/master/Dockerfile
+
+- name: apt-cacher-ng | Run the extellisys/apt-cacher-ng Docker container
+  docker:
+    image=extellisys/apt-cacher-ng
+    name=apt-cacher-ng
+    ports="{{ apt_cache_server_port }}:3142"
+    volumes="{{ apt_cache_server_dir }}:/var/cache/apt-cacher-ng"

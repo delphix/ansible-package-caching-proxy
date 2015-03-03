@@ -1,0 +1,157 @@
+#
+# Copyright (c) 2015 by Delphix. All rights reserved.
+#
+
+---
+
+# A lot of internal nginx configuration here. User-configurable options are
+# placed in defaults/main.yml.
+
+# Name and size of our shared memory zone for the caching proxy. See:
+#   http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_cache_path
+nginx_caching_proxy_server_keys_zone_name: STATIC
+nginx_caching_proxy_server_keys_zone_size: 20m
+
+# Overriding "nginx_ubuntu_pkg" from "jdauphant.nginx" to use the "nginx-extras"
+# package which includes the optional "proxy_cache_purge" module that we'll use
+# with our nginx HTTP caching proxy.
+nginx_ubuntu_pkg:
+  - python-selinux
+  - nginx-extras
+
+nginx_configs:
+  proxy:
+    - proxy_cache_path {{ nginx_caching_proxy_server_dir }}
+        levels=1:2
+        keys_zone={{ nginx_caching_proxy_server_keys_zone_name }}:{{ nginx_caching_proxy_server_keys_zone_size }}
+        max_size={{ nginx_caching_proxy_server_max_size }}
+        inactive={{ nginx_caching_proxy_server_inactive }}
+  gzip:
+    - gzip on
+    - gzip_disable "msie6"
+    - gzip_min_length 1024
+    - gzip_vary on
+    - gzip_proxied any
+    - gzip_comp_level 6
+    - gzip_buffers 16 8k
+    - gzip_http_version 1.0
+    - gzip_types text/plain text/css application/json application/x-javascript
+        text/xml application/xml application/xml+rss text/javascript
+    - gzip_static on
+  logformats:
+    - |
+      log_format proxy_cache
+        '$time_local "$upstream_cache_status | X-Refresh: $http_x_refresh" '
+        '"$request" ($status) "$http_user_agent"';
+
+nginx_http_params:
+  - sendfile on
+  - tcp_nopush on
+  - tcp_nodelay off
+  - keepalive_timeout 65
+  - types_hash_max_size 2048
+  - server_tokens off
+  - access_log "/var/log/nginx/access.log"
+  - error_log "/var/log/nginx/error.log"
+
+nginx_sites:
+  # The "/_status" location below will present statistics for the web server
+  # via the "ngx_http_stub_status_module". See:
+  #   http://nginx.org/en/docs/http/ngx_http_stub_status_module.html
+  default:
+    - listen 80 default_server
+    - server_name _
+    - root "/usr/share/nginx/html"
+    - access_log "/var/log/nginx/default-access.log"
+    - error_log "/var/log/nginx/default-error.log"
+    - index index.html
+    - location /_status {
+        stub_status on;
+      }
+
+  apt-cache:
+    - listen 80
+    - server_name {{ apt_cache_server_vhost_name }}
+    - access_log "/var/log/nginx/apt-cache-access.log"
+    - error_log "/var/log/nginx/apt-cache-error.log"
+    - location / {
+        proxy_pass_header Server;
+        proxy_redirect off;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Scheme $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Protocol http;
+        proxy_connect_timeout 10;
+        proxy_read_timeout 1200;
+        proxy_pass http://localhost:{{ apt_cache_server_port }}/;
+      }
+
+  devpi:
+    - listen 80
+    - server_name {{ devpi_server_vhost_name }}
+    - access_log "/var/log/nginx/devpi-access.log"
+    - error_log "/var/log/nginx/devpi-error.log"
+    - location / {
+        client_max_body_size 0;
+        proxy_pass_header Server;
+        proxy_redirect off;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Scheme $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Protocol http;
+        proxy_connect_timeout 10;
+        proxy_read_timeout 1200;
+        proxy_pass http://localhost:{{ devpi_server_port }}/;
+      }
+
+  # adapted from:
+  #   https://github.com/docker/docker-registry/blob/fd8c0c114985547b69088e0f1526e58bfe2ff914/contrib/nginx/nginx_1-3-9.conf
+  docker-registry:
+    - listen 80
+    - server_name {{ docker_registry_vhost_name }}
+    - access_log "/var/log/nginx/docker-registry-access.log"
+    - error_log "/var/log/nginx/docker-registry-error.log"
+    - client_max_body_size 0
+    - chunked_transfer_encoding on
+    - location / {
+        proxy_pass http://localhost:{{ docker_registry_port }}/;
+      }
+
+  # The configuration for the nginx http caching proxy was put together via
+  # examples from:
+  #
+  #   * http://nginx.com/resources/admin-guide/caching/
+  #   * http://wiki.nginx.org/ReverseProxyCachingExample
+  #   * http://vstark.net/2012/10/21/nginx-unicorn-performance-tweaks/
+  #   * http://serverfault.com/questions/30705/how-to-set-up-nginx-as-a-caching-reverse-proxy
+  #   * https://www.digitalocean.com/community/tutorials/understanding-nginx-http-proxying-load-balancing-buffering-and-caching
+  #   * http://foshttpcache.readthedocs.org/en/latest/nginx-configuration.html
+
+  nginx-cache:
+    - listen {{ nginx_caching_proxy_server_port }}
+    - server_name {{ nginx_caching_proxy_server_vhost_name }}
+    - access_log "/var/log/nginx/nginx-cache-access.log" proxy_cache
+    - error_log "/var/log/nginx/nginx-cache-error.log"
+    - location / {
+        proxy_cache {{ nginx_caching_proxy_server_keys_zone_name }};
+        proxy_cache_key $proxy_host$request_uri;
+        proxy_cache_valid
+          {{ nginx_caching_proxy_server_proxy_cache_valid_codes }}
+          {{ nginx_caching_proxy_server_proxy_cache_valid_time }};
+        resolver {{ nginx_caching_proxy_server_resolver }};
+        proxy_cache_valid any 1m;
+        proxy_cache_purge $purge_method;
+        proxy_pass $scheme://$host$request_uri;
+        proxy_no_cache $http_pragma $http_authorization;
+        proxy_cache_bypass $http_cache_control $http_x_refresh;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        add_header X-Cache-Status $upstream_cache_status;
+      }
+    - location ~ /purge/(.*) {
+        proxy_cache_purge STATIC $1;
+      }

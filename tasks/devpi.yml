@@ -1,0 +1,22 @@
+#
+# Copyright (c) 2015 by Delphix. All rights reserved.
+#
+
+---
+
+- name: devpi | Create {{ devpi_server_dir }} to store devpi files
+  file:
+    path="{{ devpi_server_dir }}"
+    state=directory
+
+# The hard-coded port and directory below are intentional as they come from
+# the Dockerfile of the container itself. See:
+#   https://github.com/scrapinghub/docker-devpi/blob/master/Dockerfile
+
+- name: devpi | Run the scrapinghub/devpi Docker container
+  docker:
+    image=scrapinghub/devpi
+    name=devpi
+    ports="{{ devpi_server_port }}:3141"
+    volumes="{{ devpi_server_dir }}:/mnt"
+    env="DEVPI_PASSWORD={{ devpi_server_password }}"

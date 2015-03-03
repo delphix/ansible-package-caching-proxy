@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2015 by Delphix. All rights reserved.
+#
+
+---
+
+- hosts: all
+  vars_files:
+    - defaults/main.yml
+    - vars/main.yml
+  tasks:
+    - include: tasks/main.yml
+  roles:
+    - jdauphant.nginx

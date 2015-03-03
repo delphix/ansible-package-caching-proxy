@@ -1,0 +1,31 @@
+#
+# Copyright (c) 2015 by Delphix. All rights reserved.
+#
+
+---
+
+apt_cache_server_enable: true
+apt_cache_server_dir: /opt/apt-cache
+apt_cache_server_port: 3142
+apt_cache_server_vhost_name: "apt-cache apt-cache.yourdomain.local"
+
+devpi_server_enable: true
+devpi_server_dir: /opt/devpi-server
+devpi_server_port: 3141
+devpi_server_password: 1234
+devpi_server_vhost_name: "devpi devpi.yourdomain.local"
+
+docker_registry_enable: true
+docker_registry_dir: /opt/docker-registry
+docker_registry_port: 5000
+docker_registry_vhost_name: "registry registry.yourdomain.local"
+
+nginx_caching_proxy_server_enable: true
+nginx_caching_proxy_server_dir: /var/cache/nginx
+nginx_caching_proxy_server_port: 1080
+nginx_caching_proxy_server_inactive: 3d
+nginx_caching_proxy_server_resolver: 8.8.8.8
+nginx_caching_proxy_server_max_size: 100g
+nginx_caching_proxy_server_proxy_cache_valid_codes: 200 301 302
+nginx_caching_proxy_server_proxy_cache_valid_time: 3d
+nginx_caching_proxy_server_vhost_name: "proxy proxy.yourdomain.local"
