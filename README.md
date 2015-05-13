@@ -77,6 +77,11 @@ nginx_caching_proxy_server_max_size: 100g
 nginx_caching_proxy_server_proxy_cache_valid_codes: 200 301 302
 nginx_caching_proxy_server_proxy_cache_valid_time: 3d
 nginx_caching_proxy_server_vhost_name: "proxy proxy.yourdomain.local"
+
+yum_repo_enable: true
+yum_repo_dir: /opt/yum-repo
+yum_repo_server_port: 80
+yum_repo_vhost_name: "yum yum.yourdomain.local"
 ```
 
 #### Examples
@@ -85,6 +90,7 @@ nginx_caching_proxy_server_vhost_name: "proxy proxy.yourdomain.local"
 
 The easiest way to use the Apt caching proxy is to put a line like the following
 into a file like `/etc/apt/apt.conf.d/02proxy`:
+
 ```
 Acquire::http { Proxy "http://CacheServerIp:3142"; };
 ```
@@ -123,6 +129,51 @@ X-Cache-Status: BYPASS
 curl -sD - http://localhost:1080/purge/releases.ubuntu.com/14.04/ubuntu-14.04-server-amd64.template
 ...
 HTTP/1.1 200 OK
+```
+
+##### RPM/YUM Repo Server
+
+This role sets up a virtual host with directory indexing to serve a RPM/YUM
+repo.
+
+In order to populate the RPM/YUM repo, first copy your RPMs to `yum_repo_dir`.
+Then run `createrepo` on that directory to create the repo meta-data files.
+The `createrepo` command needs to be re-run every time an RPM is added or
+removed from the repo in order to update the repo's metadata.
+
+The `createrepo` command can be obtained either by installing the OS package
+for `createrepo`, or by utilizing the
+[sark/createrepo](https://registry.hub.docker.com/u/sark/createrepo/) Docker
+container. Ex:
+
+```
+$ docker run -e verbose=true -v /opt/yum-repo:/data sark/createrepo:latest
+Spawning worker 0 with 1 pkgs
+Worker 0: reading apache-2.4.10-15.mga5.i586.rpm
+Workers Finished
+Saving Primary metadata
+Saving file lists metadata
+Saving other metadata
+Generating sqlite DBs
+Starting other db creation: Wed Apr 29 18:20:12 2015
+Ending other db creation: Wed Apr 29 18:20:12 2015
+Starting filelists db creation: Wed Apr 29 18:20:12 2015
+Ending filelists db creation: Wed Apr 29 18:20:12 2015
+Starting primary db creation: Wed Apr 29 18:20:12 2015
+Ending primary db creation: Wed Apr 29 18:20:12 2015
+Sqlite DBs complete
+
+$ find /opt/yum-repo
+/opt/yum-repo/
+/opt/yum-repo/apache-2.4.10-15.mga5.i586.rpm
+/opt/yum-repo/repodata
+/opt/yum-repo/repodata/cd586a4b60edfe907679da9dd1012a2511f76ee7379c0e8b43a278259c683c7f-filelists.sqlite.bz2
+/opt/yum-repo/repodata/48cdb06866f310abc4792dd9e21114bc2498bd58842436bb81a96bd5fa3855eb-other.sqlite.bz2
+/opt/yum-repo/repodata/repomd.xml
+/opt/yum-repo/repodata/f2d3501c6881b38b1ccbe8735d7e6203e1642a4bd8795c39758afdf6a4555f4f-filelists.xml.gz
+/opt/yum-repo/repodata/5d0ee9e4bc83b6ca745030e0fbc064c096339f0612103ab8b4bef1e43964fb4a-other.xml.gz
+/opt/yum-repo/repodata/0a185843f7f2f9df9e305650ed4068202ccc8a476f1b5ecb3d79c1580fd1cfee-primary.sqlite.bz2
+/opt/yum-repo/repodata/92277e8225a8f1f3e5ed2171031a25400ca283b290428138c1b2336b144db493-primary.xml.gz
 ```
 
 ##### Server Stats

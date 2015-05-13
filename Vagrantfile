@@ -9,8 +9,11 @@ VAGRANTFILE_API_VERSION = "2"
 $script = <<SCRIPT
 if [ ! -f /home/vagrant/.provisioned ]; then
     apt-get -y install python-pip
-    pip install docker-py
+    # Use "docker-py==1.1.0" until the following issue is resolved:
+    #   https://github.com/ansible/ansible-modules-core/issues/1227
+    pip install docker-py==1.1.0
     touch /home/vagrant/.provisioned
+    apt-get update
 fi
 SCRIPT
 

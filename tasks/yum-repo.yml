@@ -1,0 +1,10 @@
+#
+# Copyright (c) 2015 by Delphix. All rights reserved.
+#
+
+---
+
+- name: yum-repo | Create {{ yum_repo_dir }} to store the yum repo files
+  file:
+    path="{{ yum_repo_dir }}"
+    state=directory

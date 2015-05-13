@@ -45,8 +45,12 @@ vagrant provision
 TEST_OUTPUT=$(mktemp /tmp/test.XXXXX)
 
 #
-# Test the default server block
+# Test the default server block (vhost)
 #
+
+# The root of the default vhost should return "HTTP 204 No Content"
+curl --fail -sSD - http://localhost:8080/ >$TEST_OUTPUT
+grep "HTTP/1.1 204 No Content" $TEST_OUTPUT >/dev/null
 
 # The "/_status" location should return statistics from our web server.
 curl --fail -sSD - http://localhost:8080/_status >$TEST_OUTPUT
@@ -176,5 +180,12 @@ curl --fail -sSq -H 'Host: registry' http://localhost:8080/_ping | \
     python -m json.tool >/dev/null
 curl --fail -sSq -H 'Host: registry' http://localhost:8080/v1/_ping | \
     python -m json.tool >/dev/null
+
+#
+# Test the yum repo vhost.
+#
+
+curl --fail -sSq -I -H 'Host: yum' http://localhost:8080/ >$TEST_OUTPUT
+grep "HTTP/1.1 200 OK" $TEST_OUTPUT >/dev/null
 
 echo All tests completed successfully.

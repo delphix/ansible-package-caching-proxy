@@ -1,0 +1,8 @@
+#
+# Copyright (c) 2015 by Delphix. All rights reserved.
+#
+
+REPOSITORY="ansible-package-caching-proxy"
+REPOSITORY_TYPE="git"
+REVIEWBOARD_URL="http://reviews.delphix.com"
+

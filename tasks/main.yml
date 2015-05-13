@@ -12,3 +12,6 @@
 
 - include: docker-registry.yml
   when: docker_registry_enable
+
+- include: yum-repo.yml
+  when: yum_repo_enable
