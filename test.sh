@@ -32,14 +32,17 @@ fi
 if [[ ! -d roles ]]; then
     mkdir -pv roles
     ansible-galaxy install -p roles/ -r requirements.txt
+    ansible-galaxy install -p roles angstwad.docker_ubuntu
 fi
 
 #
 # Run "vagrant" to provision the VM. Once the VM is up we can run tests
-# against it.
+# against it. We need to add the "vagrant" user to the "docker" group
+# in order to be able run "docker" commands later.
 #
 vagrant up
 vagrant provision
+vagrant ssh -- sudo usermod -G docker vagrant
 
 # A temp file for us to store our test output.
 TEST_OUTPUT=$(mktemp /tmp/test.XXXXX)

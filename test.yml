@@ -11,4 +11,5 @@
   tasks:
     - include: tasks/main.yml
   roles:
+    - angstwad.docker_ubuntu
     - jdauphant.nginx

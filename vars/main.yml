@@ -4,6 +4,11 @@
 
 ---
 
+# Use "docker-py==1.1.0" until the following issue is incorporated
+# into an official release of Ansible (>1.9.1):
+#   https://github.com/ansible/ansible-modules-core/issues/1227
+pip_version_docker_py: "1.1.0"
+
 # A lot of internal nginx configuration here. User-configurable options are
 # placed in defaults/main.yml.
 

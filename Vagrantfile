@@ -4,30 +4,14 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-
-# The "docker-py" Python module is needed to run Ansible within the container
-$script = <<SCRIPT
-if [ ! -f /home/vagrant/.provisioned ]; then
-    apt-get -y install python-pip
-    # Use "docker-py==1.1.0" until the following issue is resolved:
-    #   https://github.com/ansible/ansible-modules-core/issues/1227
-    pip install docker-py==1.1.0
-    touch /home/vagrant/.provisioned
-    apt-get update
-fi
-SCRIPT
-
-
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    config.vm.box = "metcalfc/trusty-docker"
+    config.vm.box = "ubuntu/trusty64"
 
     config.vm.network "forwarded_port", guest: 80, host: 8080
     config.vm.network "forwarded_port", guest: 1080, host: 1080
     config.vm.network "forwarded_port", guest: 3141, host: 3141
     config.vm.network "forwarded_port", guest: 3142, host: 3142
     config.vm.network "forwarded_port", guest: 5000, host: 5000
-
-    config.vm.provision "shell", inline: $script
 
     config.vm.provision "ansible" do |ansible|
         ansible.playbook = "test.yml"
