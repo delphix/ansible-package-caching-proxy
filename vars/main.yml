@@ -171,5 +171,5 @@ nginx_sites:
     - error_log "/var/log/nginx/yum-repo-error.log"
     - root "{{ yum_repo_dir }}"
     - location / {
-        autoindex {{ yum_rpeo_autoindex }};
+        autoindex {{ yum_repo_autoindex }};
       }

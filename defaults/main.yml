@@ -31,7 +31,7 @@ nginx_caching_proxy_server_proxy_cache_valid_time: 3d
 nginx_caching_proxy_server_vhost_name: "proxy proxy.yourdomain.local"
 
 yum_repo_enable: true
-yum_rpeo_autoindex: "on"
+yum_repo_autoindex: "on"
 yum_repo_dir: /opt/yum-repo
 yum_repo_server_port: 80
 yum_repo_vhost_name: "yum yum.yourdomain.local"
