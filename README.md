@@ -46,7 +46,7 @@ interest of not making this role overly opinionated.
 
 #### Variables
 
-```
+```yaml
 apt_cache_server_enable: true
 apt_cache_server_dir: /var/cache/apt-cacher-ng
 apt_cache_server_port: 3142

@@ -3,6 +3,7 @@
 #
 
 .idea/
+.kitchen/
 .vagrant/
 roles/
 

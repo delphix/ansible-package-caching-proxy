@@ -1,0 +1,23 @@
+#
+# Copyright (c) 2015 by Delphix. All rights reserved.
+#
+---
+driver:
+  name: vagrant
+
+provisioner:
+  hosts: test-kitchen
+  name: ansible_playbook
+  ansible_verbosity: 2
+  ansible_verbose: true
+  requirements_path: requirements-test.txt
+
+platforms:
+  - name: ubuntu-14.04
+
+suites:
+  - name: default
+
+# Fix for: https://github.com/neillturner/kitchen-ansible/issues/66
+verifier:
+  ruby_bindir: '/usr/bin'
