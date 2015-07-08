@@ -11,6 +11,13 @@ provisioner:
   ansible_verbosity: 2
   ansible_verbose: true
   requirements_path: requirements-test.txt
+  #
+  # When testing with Test Kitchen, run the Docker client with
+  # "--insecure-registry registry.yourdomain.local" so that we can test pushing
+  # to our test private registry.
+  #
+  extra_vars:
+    docker_opts: "--insecure-registry registry.yourdomain.local"
 
 platforms:
   - name: ubuntu-14.04

@@ -2,6 +2,20 @@
 # Copyright (c) 2015 by Delphix. All rights reserved.
 #
 ---
+#
+# Add "registry.yourdomain.local" to "/etc/hosts" so that we can use the
+# hostname of our nginx server block (vhost) which serves the private Docker
+# registry. The IP address of "registry.yourdomain.local" will be the IP of
+# "eth0".
+#
+- hosts: test-kitchen
+  tasks:
+    - name: Add "registry.yourdomain.local" to "/etc/hosts" for testing of private Docker registry
+      lineinfile:
+        dest=/etc/hosts
+        state=present
+        line="{{ ansible_eth0.ipv4.address }}    registry.yourdomain.local"
+
 - hosts: test-kitchen
   roles:
     - angstwad.docker_ubuntu
