@@ -1,5 +1,7 @@
 ## Delphix - package-caching-proxy
 
+[![Build Status](https://travis-ci.org/delphix/ansible-package-caching-proxy.svg?branch=master)](https://travis-ci.org/delphix/ansible-package-caching-proxy)
+
 Ansible role that installs and configures a variety of caching proxies and
 artifact hosting web services.
 
