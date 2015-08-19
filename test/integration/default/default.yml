@@ -8,7 +8,7 @@
 # registry. The IP address of "registry.yourdomain.local" will be the IP of
 # "eth0".
 #
-- hosts: test-kitchen
+- hosts: all
   tasks:
     - name: Add "registry.yourdomain.local" to "/etc/hosts" for testing of private Docker registry
       lineinfile:
@@ -16,7 +16,7 @@
         state=present
         line="{{ ansible_eth0.ipv4.address }}    registry.yourdomain.local"
 
-- hosts: test-kitchen
+- hosts: all
   roles:
     - angstwad.docker_ubuntu
     - ansible-package-caching-proxy
