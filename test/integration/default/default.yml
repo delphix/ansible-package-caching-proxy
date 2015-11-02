@@ -14,7 +14,7 @@
       lineinfile:
         dest=/etc/hosts
         state=present
-        line="{{ ansible_eth0.ipv4.address }}    registry.yourdomain.local"
+        line="127.0.0.1    registry.yourdomain.local"
 
 - hosts: all
   roles:
