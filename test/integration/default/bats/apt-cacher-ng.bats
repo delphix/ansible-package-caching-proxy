@@ -21,7 +21,7 @@ setup() {
 }
 
 @test "Hitting the apt-cacher proxy on the proxy port should succeed" {
-    run curl --fail -sS http://localhost:3142/$PACKAGE_SERVER
+    run curl -sS http://localhost:3142/$PACKAGE_SERVER
     [ "$status" -eq 0 ]
 }
 
