@@ -12,12 +12,12 @@ setup() {
 }
 
 @test "Accessing the devpi server on port 3141 should return a valid JSON response" {
-    run bash -c "curl --fail -sSq http://localhost:3141/ | python -m json.tool"
+    run bash -c "curl -sSq http://localhost:3141/ | python -m json.tool"
     [ "$status" -eq 0 ]
 }
 
 @test "Accessing the devpi server via the nginx vhost should return a valid JSON response" {
-    run bash -c "curl --fail -sSq -H 'Host: devpi' http://localhost/ | python -m json.tool"
+    run bash -c "curl -sSq -H 'Host: devpi' http://localhost/ | python -m json.tool"
     [ "$status" -eq 0 ]
 }
 

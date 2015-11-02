@@ -20,12 +20,12 @@ setup() {
 # that our nginx vhost is adding for us to be able to debug the cache status :)
 #
 @test "Accessing http://www.google.com through our proxy should always return a cache miss" {
-    run curl --fail -sI http://www.google.com
+    run curl -sI http://www.google.com
     [ "$status" -eq 0 ]
     [[ "$output" =~ "Cache-Control: private" ]]
 
     for i in $(seq 1 5); do
-        run curl --fail -sSq -I --proxy $HTTP_PROXY_URL http://www.google.com/
+        run curl -sSq -I --proxy $HTTP_PROXY_URL http://www.google.com/
         [ "$status" -eq 0 ]
         [[ "$output" =~ "X-Cache-Status: MISS" ]]
     done
@@ -46,14 +46,14 @@ ISO_URL="$PROTOCOL://$PROTOCOL_RELATIVE_DOWNLOAD_URL"
     run curl -sSD - -o /dev/null http://localhost:1080/purge/$PROTOCOL_RELATIVE_DOWNLOAD_URL
     [ "$status" -eq 0 ]
 
-    run curl --fail --proxy $HTTP_PROXY_URL -sSD - -o /dev/null $ISO_URL
+    run curl --proxy $HTTP_PROXY_URL -sSD - -o /dev/null $ISO_URL
     [ "$status" -eq 0 ]
     [[ "$output" =~ "HTTP/1.1 200 OK" ]]
     [[ "$output" =~ "X-Cache-Status: MISS" ]]
 }
 
 @test "Downloading a file that is in the cache should result in a cache hit" {
-    run curl --fail --proxy $HTTP_PROXY_URL -sSD - -o /dev/null $ISO_URL
+    run curl --proxy $HTTP_PROXY_URL -sSD - -o /dev/null $ISO_URL
     [ "$status" -eq 0 ]
     [[ "$output" =~ "HTTP/1.1 200 OK" ]]
     regex="X-Cache-Status: HIT"
@@ -61,7 +61,7 @@ ISO_URL="$PROTOCOL://$PROTOCOL_RELATIVE_DOWNLOAD_URL"
 }
 
 @test "Setting the header 'X-Refresh: true' should result in a bypass of the cache" {
-    run curl --fail --proxy $HTTP_PROXY_URL -H 'X-Refresh: true' -sSD - -o /dev/null $ISO_URL
+    run curl --proxy $HTTP_PROXY_URL -H 'X-Refresh: true' -sSD - -o /dev/null $ISO_URL
     [ "$status" -eq 0 ]
     [[ "$output" =~ "HTTP/1.1 200 OK" ]]
     [[ "$output" =~ "X-Cache-Status: BYPASS" ]]
@@ -69,7 +69,7 @@ ISO_URL="$PROTOCOL://$PROTOCOL_RELATIVE_DOWNLOAD_URL"
 
 @test "Trying to purge when it's not in the cache should return 404" {
     # Clear the file from the cache by hitting the "/purge" location.
-    run curl --fail -sSD - -o /dev/null \
+    run curl -sSD - -o /dev/null \
     http://localhost:1080/purge/$PROTOCOL_RELATIVE_DOWNLOAD_URL
     [ "$status" -eq 0 ]
     [[ "$output" =~ "HTTP/1.1 200 OK" ]]
@@ -81,7 +81,7 @@ ISO_URL="$PROTOCOL://$PROTOCOL_RELATIVE_DOWNLOAD_URL"
 }
 
 @test "Downloading the file again after purging from the cache should yield a cache miss" {
-    run curl --fail --proxy $HTTP_PROXY_URL -sSD - -o /dev/null $ISO_URL
+    run curl --proxy $HTTP_PROXY_URL -sSD - -o /dev/null $ISO_URL
     [ "$status" -eq 0 ]
     [[ "$output" =~ "HTTP/1.1 200 OK" ]]
     [[ "$output" =~ "X-Cache-Status: MISS" ]]
