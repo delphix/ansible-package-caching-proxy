@@ -36,6 +36,8 @@ a private PyPI index for uploading of custom Python packages
 registry
 * [nginx HTTP caching proxy](http://nginx.com/resources/admin-guide/caching/): A
 general purpose HTTP caching proxy.
+* [sinopia](https://github.com/rlidwka/sinopia): An https://www.npmjs.com
+caching proxy.
 
 #### Requirements & Dependencies
 * Tested on Ansible 1.8
@@ -79,6 +81,11 @@ nginx_caching_proxy_server_max_size: 100g
 nginx_caching_proxy_server_proxy_cache_valid_codes: 200 301 302
 nginx_caching_proxy_server_proxy_cache_valid_time: 3d
 nginx_caching_proxy_server_vhost_name: "proxy proxy.yourdomain.local"
+
+npmjs_server_enable: true
+npmjs_server_dir: /opt/npmjs-server
+npmjs_server_port: 4873
+npmjs_server_vhost_name: "npm npm.yourdomain.local"
 
 yum_repo_enable: true
 yum_repo_dir: /opt/yum-repo
@@ -132,6 +139,10 @@ curl -sD - http://localhost:1080/purge/releases.ubuntu.com/14.04/ubuntu-14.04-se
 ...
 HTTP/1.1 200 OK
 ```
+
+##### npmjs.org Caching Proxy
+
+See implementation details at: https://hub.docker.com/r/rnbwd/sinopia/
 
 ##### RPM/YUM Repo Server
 
