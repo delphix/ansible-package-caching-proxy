@@ -11,24 +11,29 @@ services:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq python-apt
+  - sudo apt-get install -qq python-apt ruby
 
 install:
-  - pip install ansible==1.9.2
+  - pip install ansible==1.9.4
+  - sudo gem install busser --no-ri --no-rdoc
+  - sudo busser plugin install busser-bats
 
 script:
   - echo localhost > inventory
   - ansible-galaxy install -r requirements-test.txt -p ../
   - ansible-playbook -i inventory --syntax-check test/integration/default/default.yml
   - ansible-playbook -i inventory --connection=local --sudo -vvvv test/integration/default/default.yml
-#
-# Run the role/playbook again, checking to make sure it's idempotent. Ansible
-# will always return "changed=2" because the "angstwad.docker_ubuntu" role uses
-# pip to update "docker-py" and "docker-compose" and the status returned from
-# pip is meaningless.
-#
+  #
+  # Run the role/playbook again, checking to make sure it's idempotent. Ansible
+  # will always return "changed=2" because the "angstwad.docker_ubuntu" role uses
+  # pip to update "docker-py" and "docker-compose" and the status returned from
+  # pip is meaningless.
+  #
   - >
     ansible-playbook -i inventory --connection=local --sudo -vvvv test/integration/default/default.yml
     | grep -q 'changed=2.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
+
+  # Run the Test Kitchen tests.
+  - sudo /opt/busser/vendor/bats/bin/bats ./test/integration/default/bats/*.bats
