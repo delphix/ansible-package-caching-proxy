@@ -8,6 +8,8 @@ driver:
 provisioner:
   hosts: test-kitchen
   name: ansible_playbook
+  require_chef_for_busser: false
+  require_ruby_for_busser: true
   ansible_verbosity: 2
   ansible_verbose: true
   requirements_path: requirements-test.txt

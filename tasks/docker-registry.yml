@@ -11,7 +11,7 @@
 
 - name: docker-registry | Run the registry Docker container
   docker:
-    image=registry
+    image="registry:2"
     name=registry
     ports="{{ docker_registry_port }}:5000"
-    volumes="{{ docker_registry_dir }}:/tmp/registry"
+    volumes="{{ docker_registry_dir }}:/var/lib/registry"
