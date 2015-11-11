@@ -44,6 +44,6 @@ EOF
 }
 
 @test "The images should be stored in the specified directory" {
-    run stat /opt/docker-registry/docker/registry/v2/repositories/test-ansible-package-caching-proxy
+    run stat /opt/docker-registry-2/docker/registry/v2/repositories/test-ansible-package-caching-proxy
     [ "$status" -eq 0 ]
 }
