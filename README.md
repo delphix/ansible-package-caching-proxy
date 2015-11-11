@@ -69,7 +69,7 @@ docker_registry_port: 5000
 docker_registry_vhost_name: "registry registry.yourdomain.local"
 
 docker_registry_2_enable: true
-docker_registry_2_dir: /opt/docker-registry
+docker_registry_2_dir: /opt/docker-registry-2
 docker_registry_2_port: 5001
 docker_registry_2_vhost_name: "registry2 registry2.yourdomain.local"
 
