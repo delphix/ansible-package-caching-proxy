@@ -1,0 +1,17 @@
+#
+# Copyright (c) 2015 by Delphix. All rights reserved.
+#
+
+---
+
+- name: docker-registry2 | Create {{ docker_registry_2_dir }} to store docker registry files
+  file:
+    path="{{ docker_registry_2_dir }}"
+    state=directory
+
+- name: docker-registry2 | Run the registry Docker container
+  docker:
+    image="registry:2"
+    name=registry_v2
+    ports="{{ docker_registry_2_port }}:5000"
+    volumes="{{ docker_registry_2_dir }}:/var/lib/registry"

@@ -15,6 +15,11 @@
         dest=/etc/hosts
         state=present
         line="127.0.0.1    registry.yourdomain.local"
+    - name: Add "registry2.yourdomain.local" to "/etc/hosts" for testing of private Docker registry
+      lineinfile:
+        dest=/etc/hosts
+        state=present
+        line="127.0.0.1    registry2.yourdomain.local"
 
 - hosts: all
   roles:

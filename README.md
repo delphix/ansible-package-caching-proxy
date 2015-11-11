@@ -68,6 +68,11 @@ docker_registry_dir: /opt/docker-registry
 docker_registry_port: 5000
 docker_registry_vhost_name: "registry registry.yourdomain.local"
 
+docker_registry_2_enable: true
+docker_registry_2_dir: /opt/docker-registry-2
+docker_registry_2_port: 5001
+docker_registry_2_vhost_name: "registry2 registry2.yourdomain.local"
+
 nginx_caching_proxy_server_enable: true
 nginx_caching_proxy_server_dir: /var/cache/nginx
 # Port 1080 is the default for the SOCKS service
@@ -110,9 +115,14 @@ More details at:
 ##### Devpi
 See tutorials at: [http://doc.devpi.net/latest/](http://doc.devpi.net/latest/)
 
-##### Docker Registry
+##### Docker Registry v1
 See documentation at:
 [https://github.com/docker/docker-registry](https://github.com/docker/docker-registry)
+
+##### Docker Registry v2
+See documentation at:
+[https://github.com/docker/distribution](https://github.com/docker/distribution)
+
 
 ##### Nginx HTTP Caching Proxy
 

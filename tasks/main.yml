@@ -13,6 +13,9 @@
 - include: docker-registry.yml
   when: docker_registry_enable
 
+- include: docker-registry2.yml
+  when: docker_registry_2_enable
+
 - include: npmjs-proxy.yml
   when: npmjs_server_enable
 
