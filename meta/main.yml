@@ -8,7 +8,7 @@ galaxy_info:
   author: Dan Tehranian
   company: Delphix
   description: Install a collection of caching proxy solutions
-  min_ansible_version: 1.8
+  min_ansible_version: 1.9
   license: Apache
   platforms:
   - name: Ubuntu
