@@ -127,6 +127,19 @@ nginx_sites:
         proxy_pass http://localhost:{{ docker_registry_port }}/;
       }
 
+  docker-registry_2:
+    - listen 80
+    - server_name {{ docker_registry_2_vhost_name }}
+    - access_log "/var/log/nginx/docker-registry_2_-access.log"
+    - error_log "/var/log/nginx/docker-registry_2_-error.log"
+    - client_max_body_size 0
+    - proxy_set_header Host $http_host
+    - proxy_set_header X-Real-IP  $remote_addr
+    - chunked_transfer_encoding on
+    - location / {
+        proxy_pass http://localhost:{{ docker_registry_2_port }}/;
+      }
+
   # The configuration for the nginx http caching proxy was put together via
   # examples from:
   #
