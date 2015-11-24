@@ -32,7 +32,7 @@ front-end [nginx](http://nginx.org) web server:
 tailored to cache operating system packages for Debian-based distributions
 * [devpi](http://doc.devpi.net): A PyPI mirror that is also capable of acting as
 a private PyPI index for uploading of custom Python packages
-* [docker registry](https://github.com/docker/docker-registry): A private Docker
+* [docker registry v2](https://github.com/docker/distribution): A private Docker
 registry
 * [nginx HTTP caching proxy](http://nginx.com/resources/admin-guide/caching/): A
 general purpose HTTP caching proxy.
@@ -110,9 +110,9 @@ More details at:
 ##### Devpi
 See tutorials at: [http://doc.devpi.net/latest/](http://doc.devpi.net/latest/)
 
-##### Docker Registry
+##### Docker Registry v2
 See documentation at:
-[https://github.com/docker/docker-registry](https://github.com/docker/docker-registry)
+[https://github.com/docker/distribution](https://github.com/docker/distribution)
 
 ##### Nginx HTTP Caching Proxy
 

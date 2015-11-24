@@ -12,18 +12,13 @@ setup() {
 }
 
 @test "The vhost for the docker registry should be available" {
-    run curl -sSq -H 'Host: registry' http://localhost
+    run curl -sSq -H 'Host: registry' http://localhost/v2/
     [ "$status" -eq 0 ]
-    [[ "$output" =~ "docker-registry server" ]]
+    [[ "$output" =~ "{}" ]]
 }
 
-@test "The docker registry's /_ping url should return valid JSON" {
-    run bash -c "curl -sSq -H 'Host: registry' http://localhost/_ping | python -m json.tool"
-    [ "$status" -eq 0 ]
-}
-
-@test "The docker registry's /v1/_ping url should return valid JSON" {
-    run bash -c "curl -sSq -H 'Host: registry' http://localhost/v1/_ping | python -m json.tool"
+@test "The docker registry's /v2/ url should return valid JSON" {
+    run bash -c "curl -sSq -H 'Host: registry' http://localhost/v2/ | python -m json.tool"
     [ "$status" -eq 0 ]
 }
 
@@ -45,5 +40,10 @@ EOF
         /tmp/docker-build
     [ "$status" -eq 0 ]
     run docker push registry.yourdomain.local/test-ansible-package-caching-proxy
+    [ "$status" -eq 0 ]
+}
+
+@test "The images should be stored in the specified directory" {
+    run stat /opt/docker-registry/docker/registry/v2/repositories/test-ansible-package-caching-proxy
     [ "$status" -eq 0 ]
 }
