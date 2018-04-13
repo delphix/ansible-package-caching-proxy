@@ -1,3 +1,5 @@
+NOTE: This repository is archived and no longer maintained.
+
 ## Delphix - package-caching-proxy
 
 [![Build Status](https://travis-ci.org/delphix/ansible-package-caching-proxy.svg?branch=master)](https://travis-ci.org/delphix/ansible-package-caching-proxy)
